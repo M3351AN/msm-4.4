@@ -1,4 +1,4 @@
-name: Cherry Pick
+name: Merge
 
 on:
   workflow_dispatch:
