@@ -1,0 +1,51 @@
+name: Cherry Pick
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Commit hash to cherry pick'
+        required: true
+        default: ''
+      target_repo_url:
+        description: 'Target repository URL'
+        required: true
+        default: 'https://github.com/目标仓库地址.git'
+      target_branch:
+        description: 'Target branch to cherry pick from'
+        required: true
+        default: 'main'
+      review_branch:
+        description: 'Name of the new review branch'
+        required: true
+        default: ''
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout your branch
+      uses: actions/checkout@v2
+      with:
+        ref: main
+
+    - name: Create new review branch
+      run: |
+        git checkout -b ${{ github.event.inputs.review_branch }}
+
+    - name: Add target repository
+      run: git remote add target_repo ${{ github.event.inputs.target_repo_url }}
+
+    - name: Fetch target repository
+      run: git fetch target_repo
+
+    - name: Cherry pick commit
+      run: |
+        git cherry-pick ${{ github.event.inputs.commit_hash }}
+        git push origin ${{ github.event.inputs.review_branch }}
+
+    - name: Handle cherry-pick conflicts
+      if: failure()
+      run: |
+        echo "::error::Cherry-pick failed due to conflicts. Please resolve conflicts manually."
