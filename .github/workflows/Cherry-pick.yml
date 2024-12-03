@@ -10,7 +10,7 @@ on:
       target_repo_url:
         description: 'Target repository URL'
         required: true
-        default: 'https://github.com/目标仓库地址.git'
+        default: 'https://github.com/target-repo.git'
       target_branch:
         description: 'Target branch to cherry pick from'
         required: true
@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - name: Checkout your branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4.2.2
       with:
         ref: main
 
