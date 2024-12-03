@@ -1,0 +1,51 @@
+name: Cherry Pick
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Commit hash to merge'
+        required: true
+        default: ''
+      target_repo_url:
+        description: 'Target repository URL'
+        required: true
+        default: 'https://github.com/target-repo.git'
+      target_branch:
+        description: 'Target branch to merge from'
+        required: true
+        default: 'main'
+      review_branch:
+        description: 'Name of the new review branch'
+        required: true
+        default: ''
+
+jobs:
+  merge-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout your branch
+      uses: actions/checkout@v4.2.2
+      with:
+        ref: UkiMiya
+
+    - name: Create new review branch
+      run: |
+        git checkout -b ${{ github.event.inputs.review_branch }}
+
+    - name: Add target repository
+      run: git remote add target_repo ${{ github.event.inputs.target_repo_url }}
+
+    - name: Fetch target repository
+      run: git fetch target_repo
+
+    - name: Merge commit
+      run: |
+        git merge ${{ github.event.inputs.commit_hash }} --no-ff -m "Merge commit ${{ github.event.inputs.commit_hash }} into ${{ github.event.inputs.review_branch }}"
+        git push origin ${{ github.event.inputs.review_branch }}
+
+    - name: Handle merge conflicts
+      if: failure()
+      run: |
+        echo "::error::Merge failed due to conflicts. Please resolve conflicts manually."
