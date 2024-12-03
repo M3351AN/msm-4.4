@@ -8,9 +8,9 @@ on:
         required: true
         default: ''
       target_repo_url:
-        description: 'Target repository'
+        description: 'Target repository URL'
         required: true
-        default: 'owner/target-repo'
+        default: 'https://github.com/target-repo.git'
       target_branch:
         description: 'Target branch to cherry pick from'
         required: true
@@ -30,23 +30,22 @@ jobs:
       with:
         ref: UkiMiya
 
-    - name: Debug information
-      run: |
-        echo "Commit hash: ${{ github.event.inputs.commit_hash }}"
-        echo "Target repo URL: ${{ github.event.inputs.target_repo_url }}"
-        echo "Target branch: ${{ github.event.inputs.target_branch }}"
-        echo "Review branch: ${{ github.event.inputs.review_branch }}"
-
-    - name: Checkout target repository
-      uses: actions/checkout@v4.2.2
-      with:
-        repository: ${{ github.event.inputs.target_repo_url }}
-        ref: ${{ github.event.inputs.target_branch }}
-        path: target-repo
-
     - name: Create new review branch
       run: |
-        cd target-repo
         git checkout -b ${{ github.event.inputs.review_branch }}
+
+    - name: Add target repository
+      run: git remote add target_repo ${{ github.event.inputs.target_repo_url }}
+
+    - name: Fetch target repository
+      run: git fetch target_repo
+
+    - name: Cherry pick commit
+      run: |
         git cherry-pick ${{ github.event.inputs.commit_hash }}
         git push origin ${{ github.event.inputs.review_branch }}
+
+    - name: Handle cherry-pick conflicts
+      if: failure()
+      run: |
+        echo "::error::Cherry-pick failed due to conflicts. Please resolve conflicts manually."
