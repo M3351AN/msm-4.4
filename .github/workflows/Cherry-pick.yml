@@ -8,9 +8,9 @@ on:
         required: true
         default: ''
       target_repo_url:
-        description: 'Target repository URL'
+        description: 'Target repository'
         required: true
-        default: 'https://github.com/target-repo.git'
+        default: 'owner/target-repo'
       target_branch:
         description: 'Target branch to cherry pick from'
         required: true
