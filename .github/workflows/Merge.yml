@@ -42,7 +42,7 @@ jobs:
 
     - name: Merge commit
       run: |
-        git merge ${{ github.event.inputs.commit_hash }} --no-ff -m "Merge commit ${{ github.event.inputs.commit_hash }} into ${{ github.event.inputs.review_branch }}"
+        git merge ${{ github.event.inputs.commit_hash }} --allow-unrelated-histories --no-ff -m "Merge commit ${{ github.event.inputs.commit_hash }} into ${{ github.event.inputs.review_branch }}"
         git push origin ${{ github.event.inputs.review_branch }}
 
     - name: Handle merge conflicts
