@@ -32,6 +32,8 @@ jobs:
 
     - name: Create new review branch
       run: |
+        git config --global user.email "QuQ@outlook.it"
+        git config --global user.name "Ukia"
         git checkout -b ${{ github.event.inputs.review_branch }}
 
     - name: Add target repository
