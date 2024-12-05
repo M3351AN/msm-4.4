@@ -1511,7 +1511,7 @@ int cpr3_adjust_open_loop_voltages(struct cpr3_regulator *vreg)
 		if (volt_adjust[i]) {
 			prev_volt = vreg->corner[i].open_loop_volt;
 			vreg->corner[i].open_loop_volt += volt_adjust[i];
-			vreg->corner[i].open_loop_volt -= 72000;//Undervolt 72mV from UkiMiya
+			vreg->corner[i].open_loop_volt -= 48000;//Undervolt 48mV from UkiMiya
 			cpr3_debug(vreg, "adjusted corner %d open-loop voltage: %d --> %d uV\n",
 				i, prev_volt, vreg->corner[i].open_loop_volt);
 		}
